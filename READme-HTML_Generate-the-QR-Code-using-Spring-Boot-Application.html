@@ -1,0 +1,762 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Generate the QR Code using Spring Boot Application</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+}
+
+.simple-table-header {
+	background: rgb(247, 246, 243);
+	color: black;
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="426668c4-bf7b-4eb2-b3b6-d5fa03b992d8" class="page sans"><header><img class="page-cover-image" src="https://i.imgur.com/4flL37l.png" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><img class="icon" src="https://i.imgur.com/xJEKtdU.png"/></div><h1 class="page-title"><strong><strong>Generate the QR Code using Spring Boot Application</strong></strong></h1></header><div class="page-body"><p id="054fb369-9083-4e86-a81d-c4fffa68bd83" class=""> </p><p id="14bdc24e-d28a-47e5-be55-9d6ba44d9655" class="">In this article, we will build the Spring boot application which will generate the QR Code. These days people are frequently using the QR Code to transfer the money to their relatives and friends.</p><p id="dd51e22d-a361-4652-a485-e5ebca3d7c07" class="">Well QR Code not only used for money transfer, even if you booked the movie ticket then there will be a high possibility that you will get a ticket in the form of a QR Code. <em><strong>So, what actually QR Code is?</strong></em> Let’s first try to understand briefly.</p><h3 id="b2b853ca-ad22-44f0-a6c0-8b91a57067a9" class="">What is QR Code?</h3><p id="71058436-4a8e-43dd-a76f-b190d3ebaa7f" class="">It is one type of barcode basically it is a <strong>two-dimensional </strong>barcode which contains information in the form of a black square having a white background and that can only be read with the help of special electronic devices or smartphone.</p><p id="c8f3ceb1-914e-4584-ac9b-945778f611d6" class="">
+</p><figure class="block-color-teal_background callout" style="white-space:pre-wrap;display:flex" id="4e0f24c7-0958-4641-b116-d998c61c93ad"><div style="font-size:1.5em"><span class="icon">✅</span></div><div style="width:100%">In this Tutorial we are going to be using <strong>IntelliJ IDEA 2021.3.2</strong> ( any student can get this for free <a href="https://www.jetbrains.com/community/education/#students"><strong><span style="border-bottom:0.05em solid">here</span></strong></a> )<p id="d5f47185-db62-4c86-999c-dd878907d6cf" class="">You can also use IntelliJ community Edition Or <strong>STS</strong> ( spring tool suite ) </p></div></figure><p id="cc7aa943-dbad-4a50-b6d1-24647f818a9d" class="">
+</p><figure id="af092a3f-829d-4d83-b65d-b6525f6042b9" class="image"><a href="https://i.imgur.com/y0Zz00G.png"><img style="width:528px" src="https://i.imgur.com/y0Zz00G.png"/></a></figure><p id="b4bc509f-f210-489a-8900-0f5af56d0691" class="">
+</p><p id="0947f701-546b-44db-928a-6e6d42b87bab" class="">These days QR Code gaining lots of popularity because it can store a large amount of information in a limited space.</p><p id="b624794b-d564-4cca-9122-8a86f120b4a0" class="">Following are the information that QR Code can stored.</p><ol type="1" id="d83be61c-d5c0-423e-b7d3-cdff93f04dfa" class="numbered-list" start="1"><li>Product Number.</li></ol><ol type="1" id="d66f623f-2fdf-4a41-b9ea-6bb5821b6f2c" class="numbered-list" start="2"><li>Product Name.</li></ol><ol type="1" id="c3eea1d8-153a-4a74-8fdb-bf0a61d0d814" class="numbered-list" start="3"><li>Simple text.</li></ol><ol type="1" id="13f548b6-2ee1-4125-8e0f-85601d78a759" class="numbered-list" start="4"><li>URL.</li></ol><ol type="1" id="f1cec1d5-127e-4ca0-877e-e5a58e419deb" class="numbered-list" start="5"><li>Email Address.</li></ol><ol type="1" id="7a0b747f-b067-4817-8961-f5adf33ee10d" class="numbered-list" start="6"><li>Secret Client Code.</li></ol><ol type="1" id="f12dda06-7059-456f-8bf6-3302e5d53baa" class="numbered-list" start="7"><li>And many more.</li></ol><p id="fc3015d2-b00e-4a4d-a6b9-91b24947b0e8" class="">
+</p><p id="5465b70c-6a31-4adc-a952-27377f37a579" class="">
+</p><p id="09f6da41-8cb5-423f-a09c-2e25a4b18731" class=""><mark class="highlight-purple"><strong>Note: To get the Source Code please refer to</strong></mark><mark class="highlight-purple"> </mark><mark class="highlight-purple"><strong>the bottom section of this article.</strong></mark></p><p id="5bbe2fab-e953-4f3c-ae75-20ec0c26ed50" class=""><mark class="highlight-purple"><em><strong>For the Github Link / Video Tutorial please refer to bottom section of this article.</strong></em></mark></p><h3 id="a452f9d8-f854-4e6d-b370-7468ad503e53" class=""><em>Now let’s see </em><em><strong>how to generate the QR Code using Spring Boot Application.</strong></em></h3><p id="719a1dbd-f62c-4464-a57a-cb6cd4717c47" class="">Follow the Steps mentioned below.</p><p id="308197b0-ae29-4fca-baf5-583df3d2ff0a" class=""><strong>Step 1:</strong> Create a Project from <strong>Spring Initializr</strong>.</p><ul id="ba61aaea-3c57-4943-a8e3-1080a8e262b1" class="bulleted-list"><li style="list-style-type:disc">Go to the <strong><mark class="highlight-teal"><a href="https://start.spring.io/">Spring Initializr</a></mark></strong><a href="https://start.spring.io/">.</a></li></ul><ul id="259c0a96-085a-407a-8735-b4a1504a1a67" class="bulleted-list"><li style="list-style-type:disc">Enter a Group name,<strong> </strong><strong><mark class="highlight-teal">com.pixeltrice</mark></strong>.</li></ul><ul id="786cb2df-e419-4a32-a536-e07f6dd8c025" class="bulleted-list"><li style="list-style-type:disc">Mention the Artifact Id, <mark class="highlight-teal"><strong>spring-boot-QR-code-generator-app</strong></mark></li></ul><ul id="65b80dff-d1bf-4aad-9688-8d9f7043c5b9" class="bulleted-list"><li style="list-style-type:disc">Add the Spring-Web dependency.</li></ul><p id="bab99ee6-26ad-4eff-bc48-471b659b905d" class=""><strong>Step 2:</strong> Press on the Generate button, to get the project on your local system.</p><p id="d2398ade-d5dd-4448-a9d1-e04817ae2a2b" class=""><strong>Step 3:</strong>  Just unzip and extract the project that you have downloaded.</p><p id="b1b64e45-7e8a-47ec-8bb4-990456b54805" class=""><strong>Step 4:</strong> Need to import the downloaded project in the Eclipse.</p><p id="1f37cdfb-0476-42e6-8f41-0a0940705c72" class="">Select File -&gt; Import -&gt; Existing Maven Projects -&gt; Browse -&gt; Select the folder <mark class="highlight-blue"><strong>spring-boot-QR-code-generator-app</strong></mark>-&gt; Finish.</p><p id="dc2b6c23-6a55-44db-a299-9644b1a4a663" class=""><strong>Step 5:</strong> Add the ZXing Library</p><p id="0caab4eb-0ba9-4f0c-9958-419e77b78e30" class="">We are using ZXing Library to generate the QR Code, so it required to add two more dependencies in the<strong> </strong><mark class="highlight-blue"><strong>pom.xml</strong></mark><strong> </strong>file as shown below.</p><p id="f9ec66fb-0ee3-4e07-af25-764273cc8a57" class="">
+</p><p id="ce77c0da-b244-47f2-888b-cc9a72911645" class="">
+</p><p id="82c9af1e-9d74-4c85-8467-79300e26c951" class="">1. Core image dependency : </p><pre id="d21b8b3e-a784-4014-96b3-02b6a36f74fd" class="code code-wrap"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.google.zxing&lt;/groupId&gt;
+    &lt;artifactId&gt;core&lt;/artifactId&gt;
+    &lt;version&gt;3.4.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre><p id="c2653546-3e70-46a7-9b72-8b155441d042" class="">
+</p><p id="881563d8-149d-4f83-8463-b76dc3f251d9" class="">
+</p><ol type="1" id="5b852d5c-7758-444c-9c85-0eef799a9228" class="numbered-list" start="2"><li>Java Client dependency :</li></ol><pre id="18c08b82-8cdd-4161-bb98-92e6625842f1" class="code code-wrap"><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.google.zxing&lt;/groupId&gt;
+    &lt;artifactId&gt;javase&lt;/artifactId&gt;
+    &lt;version&gt;3.4.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre><p id="ade6aefd-24e8-4186-9e65-0e8c33173269" class="">
+</p><p id="98287ddd-0835-47a5-807f-a6eb428147a5" class="">
+</p><figure id="2f68f969-a3a8-46f6-82c6-4a0b874dbc64"><div class="source"><a href="https://gist.github.com/iifast2/31527421494203def0cba7474c51f13c">https://gist.github.com/iifast2/31527421494203def0cba7474c51f13c</a></div><figcaption><strong>pom.xml</strong></figcaption></figure><p id="2da0942b-7650-40dd-862c-b1b11f29189a" class="">
+</p><p id="5cfd3303-1791-45af-9fad-de381ae6ed22" class=""><strong>Step 6:</strong> Create a Class for QR Code Generator.</p><p id="9a26bcbb-dce9-4524-9323-4de8cdbca30c" class="">In this class we will define a method to generate the QR Code.</p><p id="9e376f24-c608-409b-9a39-0259b49b54e7" class="">
+</p><p id="bbd12420-c62f-41d7-a851-2267601ec899" class=""><strong>QRCodeGenerator.java : </strong></p><pre id="6c253d0f-7252-41d8-bac1-6e67df123725" class="code code-wrap"><code>package com.pixeltrice.springbootqrcodegeneratorapp;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+
+public class QRCodeGenerator {
+
+    public static void generateQRCodeImage(String text, int width, int height, String filePath)
+            throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        Path path = FileSystems.getDefault().getPath(filePath);
+        MatrixToImageWriter.writeToPath(bitMatrix, &quot;PNG&quot;, path);
+
+    }
+
+
+    public static byte[] getQRCodeImage(String text, int width, int height) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, &quot;PNG&quot;, pngOutputStream);
+        byte[] pngData = pngOutputStream.toByteArray();
+        return pngData;
+    }
+
+}</code></pre><p id="9185a78e-757f-4349-bedb-71c4c77498a4" class="">
+</p><p id="66924f39-ac6b-4f4d-901e-6ecb69705c1e" class="">
+</p><p id="6e14d26f-7a10-45b3-8b6c-cef9d5b887d7" class="">In the above class, we have defined two methods, the first method is used to generate the QR Code in image form.</p><p id="b01f5b5b-45ff-4555-8259-ea31cd503c3e" class="">And the second method will generate the QR Code in the form of a byte array, which we used to return as a response for HTTP Request.</p><p id="ed407857-6b0b-4af6-8f7b-fab485c9cb92" class=""><strong>Step 7:</strong> Create a Controller Class.</p><p id="5e781351-1831-4b2f-a167-460a83992ad3" class="">In this step, we will create two API, first one is to generate the image form of the QR Code and also provide the path to save the QR Code automatically in the local system.</p><p id="fa1200fb-0c2a-4b6d-b00a-01b7e193cccb" class="">Another API will return the QR Code in the form of a byte array so that it can be used along with the HTML and javascript to display on the web pages.</p><p id="19c0f6a8-2b5f-4e48-9fbb-38f9e79ae09a" class="">
+</p><p id="6863236c-678f-4c30-92dc-e5c027033f29" class="">
+</p><p id="ff16b311-986b-4ba3-ac8e-82d5e978a33a" class=""><strong>QRCodeController.java</strong></p><pre id="6cb04c58-18b2-4aff-a618-350c0aef386a" class="code code-wrap"><code>package com.pixeltrice.springbootqrcodegeneratorapp;
+
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class QRCodeController {
+
+    private static final String QR_CODE_IMAGE_PATH = &quot;./src/main/resources/QRCode.png&quot;;
+
+
+    @GetMapping(value = &quot;/genrateAndDownloadQRCode/{codeText}/{width}/{height}&quot;)
+    public void download(
+            @PathVariable(&quot;codeText&quot;) String codeText,
+            @PathVariable(&quot;width&quot;) Integer width,
+            @PathVariable(&quot;height&quot;) Integer height)
+            throws Exception {
+        QRCodeGenerator.generateQRCodeImage(codeText, width, height, QR_CODE_IMAGE_PATH);
+    }
+
+    @GetMapping(value = &quot;/genrateQRCode/{codeText}/{width}/{height}&quot;)
+    public ResponseEntity&lt;byte[]&gt; generateQRCode(
+            @PathVariable(&quot;codeText&quot;) String codeText,
+            @PathVariable(&quot;width&quot;) Integer width,
+            @PathVariable(&quot;height&quot;) Integer height)
+            throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(QRCodeGenerator.getQRCodeImage(codeText, width, height));
+    }
+}</code></pre><p id="1d15bfae-558b-47b5-802a-26c0ba9dd8f3" class="">
+</p><p id="ee7f4b93-4ffc-4cb9-b12a-b61b0e420f81" class="">APIs mentioned above will accept the three data in the form of Path Variable.</p><ul id="932c3e16-eb0c-46fe-b52f-b634af95bcd7" class="bulleted-list"><li style="list-style-type:disc"><strong>codeText</strong>: We can pass any random text which can act as secret text when somebody scans the QR Code.</li></ul><ul id="3b54edcc-fd6d-4523-af9e-16da4dbea0bf" class="bulleted-list"><li style="list-style-type:disc"><strong>width:</strong> Specify the width of the QR Code image.</li></ul><ul id="1a1175bb-4fc2-4867-90e2-5de1fc7c7de3" class="bulleted-list"><li style="list-style-type:disc"><strong>height:</strong> To specify the height of QR Code image.</li></ul><p id="6d41632d-ae93-41c8-848e-7d3707b01373" class="">In the above code, you can see we have specified the path <mark class="highlight-blue"><strong>“./src/main/resources/QRCode.png”</strong></mark> where the QR Code Image will get saved.</p><p id="47a725a2-2111-427d-bb49-bd2e7e6e8877" class="">Alright, we are good to go and run the application, but first, verify all the necessary dependencies are present in the <a href="https://gist.github.com/iifast2/31527421494203def0cba7474c51f13c"><strong>pom.xml</strong></a><strong> </strong>file.</p><p id="d8aa3aa9-5e79-490b-9b4e-faa29ea10678" class="">
+</p><p id="49f38848-540b-4037-af3d-54dec5bd0cf7" class="">
+</p><p id="75edc016-8966-4909-92f6-f128ac4e5368" class=""><strong>Step 8:</strong> Run the Appication.</p><p id="ff9d7b6c-52e0-4859-94d2-74892626ccda" class="">Go to the browser or POSTMAN and hit the <mark class="highlight-teal_background"><strong>http://localhost:8080/genrateAndDownloadQRCode/code/350/350</strong></mark></p><p id="94fb8aa2-b53a-4365-a166-964902fcc613" class="">Now go inside the path <mark class="highlight-blue"><strong>src/main/resources</strong></mark> and Right Click –&gt; refresh the folder, you will able to see the QR Code Image saved with named<strong> </strong><mark class="highlight-blue"><strong>QRCode.png</strong></mark></p><p id="c1053e73-3388-4e4b-a5d1-5fd462452cc1" class="">
+</p><figure id="be44d0c9-37f4-4eab-8a09-53ecaafe85f2" class="image"><a href="https://i.imgur.com/89wC0G3.png"><img style="width:768px" src="https://i.imgur.com/89wC0G3.png"/></a></figure><p id="59259e21-f65d-4748-9ea4-8b4ba7cd9eef" class="">
+</p><p id="235248f7-1f92-4c64-8ea0-ed3bd7f1b5cd" class="">And the image will be look like as shown in below figure.</p><p id="fe249d1f-54ba-4b7e-939c-69ddee5fac19" class=""><strong>QRCode.png</strong></p><p id="18afad3a-0e90-4144-befc-71f6fcc64c7e" class="">
+</p><figure id="bfdf1c21-0aba-4252-86d3-35ea32f98fce" class="image"><a href="https://i.imgur.com/yKbczQN.png"><img style="width:720px" src="https://i.imgur.com/yKbczQN.png"/></a></figure><p id="ef9cb90a-9255-4f5e-948c-37d89a935570" class="">
+</p><figure id="b79b9981-2c27-403e-ac1b-cff3d2dcd0e3" class="image"><a href="https://i.imgur.com/VfnGWwH.png"><img style="width:720px" src="https://i.imgur.com/VfnGWwH.png"/></a><figcaption><strong>QRCode.png</strong></figcaption></figure><p id="6384dd50-c5a8-44b0-862c-95791b630dce" class="">
+</p><p id="4fd9f2ea-ba32-45f9-8b3f-07d0036ddb1b" class="">
+</p><h2 id="8b027340-91f6-4b1d-b87a-201ee4c6cfd5" class="">Summary</h2><p id="787e4a05-8959-4c1f-89e4-6caf7493f960" class="">In this article, we have learned to generate the QR Code using Spring Boot. If you face any difficultly or have some doubt please feel free to ask in the comment section, I will definitely help you. For Reference please download the source code I have provided the link.</p><p id="b581ebd4-582e-4590-ac09-a842f0918f42" class="">
+</p><p id="08f92606-0da8-4947-a239-8e66e7d1244c" class="">
+</p><h3 id="bdad874b-7483-4e4d-ae67-6bfc9bc18103" class="block-color-pink_background"><strong>Github Link :</strong> <a href="https://github.com/iifast2/Springboot-QRCodeGeneratorApp">https://github.com/iifast2/Springboot-QRCodeGeneratorApp</a></h3><p id="c1be0843-c591-4188-9770-0fa55e369bd9" class=""><a href="https://github.com/iifast2/Springboot-QRCodeGeneratorApp">https://github.com/iifast2/Springboot-QRCodeGeneratorApp</a></p><p id="c80794ae-0b5c-4ef4-83af-0b5e6a0b9245" class="">
+</p></div></article></body></html>
