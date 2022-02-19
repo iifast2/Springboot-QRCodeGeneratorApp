@@ -33,7 +33,7 @@ http://localhost:8080/genrateAndDownloadQRCode/SILVER_IMAGE_PATH/350/350
 
 
 
-# Documentation : 
+# Doc : 
 
-
+https://github.com/iifast2/Springboot-QRCodeGeneratorApp/blob/main/Generate_the_QR_Code_using_Spring_Boot_Application.pdf
 
